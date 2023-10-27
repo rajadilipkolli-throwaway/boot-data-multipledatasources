@@ -2,9 +2,8 @@ package com.example.multipledatasources;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -12,8 +11,9 @@ import org.testcontainers.containers.PostgreSQLContainer;
 @TestConfiguration(proxyBeanMethods = false)
 public class TestMultipleDataSourcesApplication {
 
+    @ServiceConnection
     @Bean
-    @Order(Ordered.HIGHEST_PRECEDENCE)
+    // @DependsOn("mySQLContainer")
     PostgreSQLContainer<?> postgreSQLContainer(DynamicPropertyRegistry dynamicPropertyRegistry) {
         PostgreSQLContainer<?> postgreSQLContainer =
                 new PostgreSQLContainer<>("postgres:16.0-alpine");
@@ -25,6 +25,7 @@ public class TestMultipleDataSourcesApplication {
         return postgreSQLContainer;
     }
 
+    @ServiceConnection
     @Bean
     MySQLContainer<?> mySQLContainer(DynamicPropertyRegistry dynamicPropertyRegistry) {
         MySQLContainer<?> mySQLContainer = new MySQLContainer<>("mysql:8.1");
